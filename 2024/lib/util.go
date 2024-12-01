@@ -16,7 +16,7 @@ func (ql *QuickLogger) Title() {
 }
 
 func (ql *QuickLogger) Solve(solution interface{}) {
-	fmt.Printf("Solution to Advent of Code 2024 day %d part %d is:\n '%v'", ql.day, ql.part, solution)
+	fmt.Printf("Solution to Advent of Code 2024 day %d part %d is:\n '%v'\n", ql.day, ql.part, solution)
 }
 
 func CheckError(err error) {
