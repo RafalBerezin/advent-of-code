@@ -24,6 +24,14 @@ func LoadExampleFile(day int) *InputFile {
 	return &InputFile{file}
 }
 
+func (f *InputFile) Bytes() ([]byte) {
+	file, err := os.ReadFile(f.filename)
+	CheckError(err)
+
+	return file
+}
+
+
 func (f *InputFile) Strings() ([]string, error) {
 	file, err := os.Open(f.filename)
 	if err != nil {
