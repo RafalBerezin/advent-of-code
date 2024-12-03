@@ -18,6 +18,12 @@ func LoadInputFile(day int) *InputFile {
 	return &InputFile{file}
 }
 
+func LoadExampleFile(day int) *InputFile {
+	file := fmt.Sprintf("./day-%d/example.txt", day)
+
+	return &InputFile{file}
+}
+
 func (f *InputFile) Strings() ([]string, error) {
 	file, err := os.Open(f.filename)
 	if err != nil {
