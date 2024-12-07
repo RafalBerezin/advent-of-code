@@ -17,7 +17,9 @@ func Part2(file *lib.InputFile) any {
 	guard := findGuard(inputGrid)
 	visited := findVisitedCells(inputGrid, height, width, guard)
 
+	mut := sync.Mutex{}
 	result := 0
+
 	wg := sync.WaitGroup{}
 	wg.Add(width * height)
 
@@ -25,7 +27,9 @@ func Part2(file *lib.InputFile) any {
 		for col := range rowSlice {
 			go func() {
 				if visited[row * width + col] && checkLoop(inputGrid, row, col, height, width, guard) {
+					mut.Lock()
 					result++
+					mut.Unlock()
 				}
 				wg.Done()
 			}()
