@@ -34,6 +34,27 @@ func (f *InputFile) Bytes() []byte {
 	return file
 }
 
+func (f *InputFile) ByteGrid() [][]byte {
+	file, err := os.Open(f.dir + f.file)
+	CheckError(err)
+	defer file.Close()
+
+	var rows [][]byte
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		bytes := make([]byte, len(scanner.Bytes()))
+		copy(bytes, scanner.Bytes())
+		rows = append(rows, bytes)
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+
+	return rows
+}
+
 func (f *InputFile) Strings() []string {
 	file, err := os.Open(f.dir + f.file)
 	CheckError(err)

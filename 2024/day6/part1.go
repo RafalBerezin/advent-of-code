@@ -1,63 +1,26 @@
 package day6
 
 import (
-	"slices"
-
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-var chars = []byte{'^', '>', 'V', '<'}
-var dirs = [][]int {
-	{0,-1}, // ^
-	{1,0}, // >
-	{0,1}, // V
-	{-1,0}, // <
-}
+// see shared.go for dirs and findGuard
 
 func Part1(file *lib.InputFile) any {
-	input := file.Bytes()
+	inputGrid := file.ByteGrid()
 
-	width := slices.Index(input, '\n')
-	widthNL := width + 1
-	height := len(input) / widthNL
+	height := len(inputGrid)
+	width := len(inputGrid[0])
 
-	startingPos := slices.IndexFunc(input, func(e byte) bool {
-		return e == '^' || e == '>' || e == 'V' || e == '<'
-	})
+	guard := findGuard(inputGrid)
 
-	x := startingPos % widthNL
-	y := startingPos / widthNL
-
-	charI := x + y * widthNL
-	char := input[charI]
-	dirI := slices.Index(chars, char)
-	dir := dirs[dirI]
-
-	for {
-		input[charI] = '*'
-		nextX := x + dir[0]
-		nextY := y + dir[1]
-		if nextX < 0 || nextX > width || nextY < 0 || nextY >= height {
-			break
-		}
-
-		nextI := nextX + nextY * widthNL
-		nextChar := input[nextI]
-
-		if nextChar == '#' {
-			dirI = (dirI + 1) % 4
-			dir = dirs[dirI]
-			continue
-		}
-
-		x = nextX
-		y = nextY
-		charI = nextI
-	}
+	// main logic reused in part 2
+	// see shared.go
+	visited := findVisitedCells(inputGrid, height, width, guard)
 
 	result := 0
-	for _, char := range input {
-		if char == '*' {
+	for _, vis := range visited {
+		if vis {
 			result++
 		}
 	}

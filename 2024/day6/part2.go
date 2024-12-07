@@ -1,48 +1,30 @@
 package day6
 
 import (
-	"fmt"
-	"slices"
 	"sync"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-// chars and dirs in part1.go
+// see shared.go
 
 func Part2(file *lib.InputFile) any {
-	inputStrings := file.Strings()
+	inputGrid := file.ByteGrid()
 
-	height := len(inputStrings)
-	width := len(inputStrings[0])
+	height := len(inputGrid)
+	width := len(inputGrid[0])
 
-	var input [][]byte = make([][]byte, height)
-	var guardPos []int = nil
-
-	for row, line := range inputStrings {
-		input[row] = []byte(line)
-
-		if guardPos != nil {
-			continue
-		}
-
-		col := slices.Index(input[row], '^')
-		if col != -1 {
-			guardPos = []int{col, row}
-		}
-	}
-
+	guard := findGuard(inputGrid)
+	visited := findVisitedCells(inputGrid, height, width, guard)
 
 	result := 0
 	wg := sync.WaitGroup{}
 	wg.Add(width * height)
-	// no time to make it good, just check all options
-	// i'll update this someday later
-	for row := 0; row < height; row++  {
-		for col := 0; col < width; col++  {
+
+	for row, rowSlice := range inputGrid  {
+		for col := range rowSlice {
 			go func() {
-				if input[row][col] == '.' && 
-				checkLoop(input, row, col, height, width, guardPos) {
+				if visited[row * width + col] && checkLoop(inputGrid, row, col, height, width, guard) {
 					result++
 				}
 				wg.Done()
@@ -55,44 +37,44 @@ func Part2(file *lib.InputFile) any {
 	return result
 }
 
-func checkLoop(input [][]byte, row, col, height, width int, start []int) bool {
-	inputCopy := make([][]byte, height)
-	for i, row := range input {
-		inputCopy[i] = make([]byte, width)
-		copy(inputCopy[i], row)
+func checkLoop(grid [][]byte, row, col, height, width int, start []int) bool {
+	gridCopy := make([][]byte, height)
+	for i, row := range grid {
+		gridCopy[i] = make([]byte, width)
+		copy(gridCopy[i], row)
 	}
 
-	currentDirI := 0
-	currentDir := dirs[currentDirI]
-	currentPos := start
+	dirI := 0
+	dir := dirs[dirI]
+	guard := start
 
-	inputCopy[row][col] = '#'
-
-	visited := make(map[string]bool)
+	gridCopy[row][col] = '#'
+	visited := make([]bool, height * width * 4)
 
 	for {
-		visitedKey := fmt.Sprintf("%d,%d,%d", currentPos[0], currentPos[1], currentDirI)
-		if visited[visitedKey] {
+		unifiedPos := (guard[0] * width + guard[1]) * 4 + dirI
+		if visited[unifiedPos] {
+			grid[row][col] = '.'
 			return true
 		}
-		visited[visitedKey] = true
+		visited[unifiedPos] = true
 
 		nextPos := []int{
-			currentPos[0] + currentDir[0],
-			currentPos[1] + currentDir[1],
+			guard[0] + dir[0],
+			guard[1] + dir[1],
 		}
 
-		if nextPos[0] < 0 || nextPos[0] >= width || nextPos[1] < 0 || nextPos[1] >= height {
+		if nextPos[0] < 0 || nextPos[0] >= height || nextPos[1] < 0 || nextPos[1] >= width {
 			return false
 		}
 
-		hitObstacle := inputCopy[nextPos[1]][nextPos[0]] == '#'
+		hitObstacle := gridCopy[nextPos[0]][nextPos[1]] == '#'
 		if hitObstacle {
-			currentDirI = (currentDirI + 1) % 4
-			currentDir = dirs[currentDirI]
+			dirI = (dirI + 1) % 4
+			dir = dirs[dirI]
 			continue
 		}
 
-		currentPos = nextPos
+		guard = nextPos
 	}
 }
