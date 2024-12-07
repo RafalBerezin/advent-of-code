@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -35,7 +34,6 @@ func Part2() {
 		}
 
 		res := checkNum2(target, nums[0], nums, 1)
-		fmt.Printf("line: %v [%v]\n", line, res)
 		if res {
 			result += target
 		}

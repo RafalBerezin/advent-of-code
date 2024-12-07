@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -37,9 +36,6 @@ func Part1() {
 		if checkNum(target, nums[0], nums, 1) {
 			result += target
 		}
-
-		fmt.Printf("expected: %v\n", target)
-		fmt.Printf("nums: %v\n", nums)
 	}
 
 	ql.Solve(result)
@@ -49,17 +45,15 @@ func checkNum(target, current int, nums []int, i int) bool {
 	if i >= len(nums) {
 		return current == target
 	}
-
 	next := nums[i]
-	mul := current * next
-	add := current + next
 
-	if mul <= target {
-		if checkNum(target, mul, nums, i + 1) {
-			return true
-		}
+	mul := current * next
+
+	if mul <= target && checkNum(target, mul, nums, i + 1) {
+		return true
 	}
 
+	add := current + next
 	return add <= target && checkNum(target, add, nums, i + 1)
 }
 
