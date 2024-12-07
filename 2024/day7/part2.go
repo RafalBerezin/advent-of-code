@@ -3,36 +3,50 @@ package day7
 import (
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
 func Part2(file *lib.InputFile) any {
 	input := file.Strings()
+
+	mut := sync.Mutex{}
 	result := 0
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(input))
+
 	for _, line := range input {
-		separator := strings.Index(line, ":")
-		if separator == -1 {
-			continue
-		}
+		go func() {
+			defer wg.Done()
 
-		target, err := strconv.Atoi(line[:separator])
-		lib.CheckError(err)
+			separator := strings.Index(line, ":")
+			if separator == -1 {
+				return
+			}
 
-		numStrs := strings.Split(line[separator+2:], " ")
-		nums := make([]int, len(numStrs))
-		for i, numStr := range numStrs {
-			num, err := strconv.Atoi(numStr)
+			target, err := strconv.Atoi(line[:separator])
 			lib.CheckError(err)
-			nums[i] = num
-		}
 
-		res := checkNum2(target, nums[0], nums, 1)
-		if res {
-			result += target
-		}
+			numStrs := strings.Split(line[separator+2:], " ")
+			nums := make([]int, len(numStrs))
+			for i, numStr := range numStrs {
+				num, err := strconv.Atoi(numStr)
+				lib.CheckError(err)
+				nums[i] = num
+			}
+
+			res := checkNum2(target, nums[0], nums, 1)
+			if res {
+				mut.Lock()
+				result += target
+				mut.Unlock()
+			}
+		}()
 	}
+
+	wg.Wait()
 
 	return result
 }
