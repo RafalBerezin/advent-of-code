@@ -9,34 +9,34 @@ import (
 )
 
 type InputFile struct {
-	filename string
+	dir string
+	file string
 }
 
-func LoadInputFile(day int) *InputFile {
-	file := fmt.Sprintf("./day-%d/input.txt", day)
+func LoadFile(day string) *InputFile {
+	dir := fmt.Sprintf("./day%v/", day)
 
-	return &InputFile{file}
+	return &InputFile{dir, "input.txt"}
 }
 
-func LoadExampleFile(day int) *InputFile {
-	file := fmt.Sprintf("./day-%d/example.txt", day)
-
-	return &InputFile{file}
+func (f *InputFile) Input() *InputFile {
+	return &InputFile{f.dir, "input.txt"}
 }
 
-func (f *InputFile) Bytes() ([]byte) {
-	file, err := os.ReadFile(f.filename)
+func (f *InputFile) Example() *InputFile {
+	return &InputFile{f.dir, "example.txt"}
+}
+
+func (f *InputFile) Bytes() []byte {
+	file, err := os.ReadFile(f.dir + f.file)
 	CheckError(err)
 
 	return file
 }
 
-
-func (f *InputFile) Strings() ([]string, error) {
-	file, err := os.Open(f.filename)
-	if err != nil {
-		return nil, err
-	}
+func (f *InputFile) Strings() []string {
+	file, err := os.Open(f.dir + f.file)
+	CheckError(err)
 	defer file.Close()
 
 	var lines []string
@@ -48,44 +48,34 @@ func (f *InputFile) Strings() ([]string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return lines, nil
+	return lines
 }
 
-func (f *InputFile) Ints() ([]int, error) {
-	lines, err := f.Strings()
-	if err != nil {
-		return nil, err
-	}
+func (f *InputFile) Ints() []int {
+	lines := f.Strings()
 
 	var ints []int
 	for _, line := range lines {
 		num, err := strconv.Atoi(line)
-		if (err != nil) {
-			return nil, err
-		}
+		CheckError(err)
 		ints = append(ints, num)
 	}
 
-	return ints, nil
+	return ints
 }
 
-func (f *InputFile) Floats() ([]float64, error) {
-	lines, err := f.Strings()
-	if err != nil {
-		return nil, err
-	}
+func (f *InputFile) Floats() []float64 {
+	lines := f.Strings()
 
 	var floats []float64
 	for _, line := range lines {
 		num, err := strconv.ParseFloat(line, 64)
-		if (err != nil) {
-			return nil, err
-		}
+		CheckError(err)
 		floats = append(floats, num)
 	}
 
-	return floats, nil
+	return floats
 }

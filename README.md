@@ -8,3 +8,5 @@ I'm starting this journey in 2024, but at some point I want to solve puzzles fro
 ## What languages have I used?
 
 - 2024: Go
+
+Instructions on how to run the solution are in the specific year's readme.

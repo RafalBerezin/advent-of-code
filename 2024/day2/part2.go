@@ -1,18 +1,15 @@
-package main
+package day2
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part2() {
-	ql := lib.NewQuickLogger(2, 2)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(2).Strings()
-	lib.CheckError(err)
+func Part2(file *lib.InputFile) any {
+	input := file.Strings()
 
 	var safeReports int
 
@@ -32,7 +29,7 @@ func Part2() {
 		}
 	}
 
-	ql.Solve(safeReports)
+	return safeReports
 }
 
 func checkNums(nums []int, dampener bool) bool {
@@ -53,8 +50,7 @@ func checkNums(nums []int, dampener bool) bool {
 		}
 
 		for j := 0; j < len(nums); j++ {
-			adjustedNums := append(append(make([]int, 0, maxLen), nums[:j]...), nums[j+1:]...)
-			if checkNums(adjustedNums, false) {
+			if checkNums(slices.Concat(nums[:j], nums[j+1:]), false) {
 				return true
 			}
 		}

@@ -1,4 +1,4 @@
-package main
+package day6
 
 import (
 	"fmt"
@@ -8,14 +8,10 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-// chars and dirs in part-1.go
+// chars and dirs in part1.go
 
-func Part2() {
-	ql := lib.NewQuickLogger(6, 2)
-	ql.Title()
-
-	inputStrings, err := lib.LoadInputFile(6).Strings()
-	lib.CheckError(err)
+func Part2(file *lib.InputFile) any {
+	inputStrings := file.Strings()
 
 	height := len(inputStrings)
 	width := len(inputStrings[0])
@@ -39,7 +35,7 @@ func Part2() {
 
 	result := 0
 	wg := sync.WaitGroup{}
-	wg.Add(width * height - 1)
+	wg.Add(width * height)
 	// no time to make it good, just check all options
 	// i'll update this someday later
 	for row := 0; row < height; row++  {
@@ -56,7 +52,7 @@ func Part2() {
 
 	wg.Wait()
 
-	ql.Solve(result)
+	return result
 }
 
 func checkLoop(input [][]byte, row, col, height, width int, start []int) bool {

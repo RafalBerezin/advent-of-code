@@ -1,4 +1,4 @@
-package main
+package day3
 
 import (
 	"regexp"
@@ -8,11 +8,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part2() {
-	ql := lib.NewQuickLogger(3, 2)
-	ql.Title()
-
-	input := lib.LoadInputFile(3).Bytes()
+func Part2(file *lib.InputFile) any {
+	input := file.Bytes()
 	matcher := regexp.MustCompile(`mul\(\d{1,3},\d{1,3}\)|do(n't)?\(\)`)
 
 	enabled := true
@@ -40,5 +37,5 @@ func Part2() {
 		result += a * b
 	}
 
-	ql.Solve(result)
+	return result
 }

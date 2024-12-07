@@ -1,4 +1,4 @@
-package main
+package day2
 
 import (
 	"strconv"
@@ -7,12 +7,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part1() {
-	ql := lib.NewQuickLogger(2, 1)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(2).Strings()
-	lib.CheckError(err)
+func Part1(file *lib.InputFile) any {
+	input := file.Strings()
 
 	var safeReports int
 
@@ -50,5 +46,5 @@ func Part1() {
 		}
 	}
 
-	ql.Solve(safeReports)
+	return safeReports
 }

@@ -1,4 +1,4 @@
-package main
+package day1
 
 import (
 	"sort"
@@ -8,13 +8,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part1() {
-	ql := lib.NewQuickLogger(1, 1)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(1).Strings()
-	lib.CheckError(err)
-
+func Part1(file *lib.InputFile) any {
+	input := file.Strings()
 	length := len(input)
 
 	leftNums := make([]int, 0, length)
@@ -45,5 +40,5 @@ func Part1() {
 		diffSum += diff
 	}
 
-	ql.Solve(diffSum)
+	return diffSum
 }

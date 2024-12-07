@@ -1,4 +1,4 @@
-package main
+package day5
 
 import (
 	"slices"
@@ -8,12 +8,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part1() {
-	ql := lib.NewQuickLogger(5, 1)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(5).Strings()
-	lib.CheckError(err)
+func Part1(file *lib.InputFile) any {
+	input := file.Strings()
 	splitIndex := slices.Index(input, "")
 
 	orders := input[:splitIndex]
@@ -44,7 +40,7 @@ func Part1() {
 	}
 
 
-	ql.Solve(result)
+	return result
 }
 
 func isOrdered(nums []string, ordersMap map[string][]string) bool {

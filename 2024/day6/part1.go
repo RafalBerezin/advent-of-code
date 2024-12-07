@@ -1,7 +1,6 @@
-package main
+package day6
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
@@ -15,11 +14,8 @@ var dirs = [][]int {
 	{-1,0}, // <
 }
 
-func Part1() {
-	ql := lib.NewQuickLogger(6, 1)
-	ql.Title()
-
-	input := lib.LoadInputFile(6).Bytes()
+func Part1(file *lib.InputFile) any {
+	input := file.Bytes()
 
 	width := slices.Index(input, '\n')
 	widthNL := width + 1
@@ -38,7 +34,6 @@ func Part1() {
 	dir := dirs[dirI]
 
 	for {
-		fmt.Printf("dir: %v\n", dir)
 		input[charI] = '*'
 		nextX := x + dir[0]
 		nextY := y + dir[1]
@@ -60,8 +55,6 @@ func Part1() {
 		charI = nextI
 	}
 
-	fmt.Printf("path:\n%s\n", input)
-
 	result := 0
 	for _, char := range input {
 		if char == '*' {
@@ -69,5 +62,5 @@ func Part1() {
 		}
 	}
 
-	ql.Solve(result)
+	return result
 }

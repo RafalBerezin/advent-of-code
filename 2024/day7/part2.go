@@ -1,4 +1,4 @@
-package main
+package day7
 
 import (
 	"strconv"
@@ -7,13 +7,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part1() {
-	ql := lib.NewQuickLogger(7, 1)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(7).Strings()
-	lib.CheckError(err)
-
+func Part2(file *lib.InputFile) any {
+	input := file.Strings()
 	result := 0
 
 	for _, line := range input {
@@ -33,27 +28,36 @@ func Part1() {
 			nums[i] = num
 		}
 
-		if checkNum(target, nums[0], nums, 1) {
+		res := checkNum2(target, nums[0], nums, 1)
+		if res {
 			result += target
 		}
 	}
 
-	ql.Solve(result)
+	return result
 }
 
-func checkNum(target, current int, nums []int, i int) bool {
+// done in 2 minutes then trying to find whats wrong
+// inside i was calling chuckNum from part 1
+func checkNum2(target, current int, nums []int, i int) bool {
 	if i >= len(nums) {
 		return current == target
 	}
 	next := nums[i]
 
 	mul := current * next
-
-	if mul <= target && checkNum(target, mul, nums, i + 1) {
+	if mul <= target && checkNum2(target, mul, nums, i + 1) {
 		return true
 	}
 
 	add := current + next
-	return add <= target && checkNum(target, add, nums, i + 1)
+	if add <= target && checkNum2(target, add, nums, i + 1) {
+		return true
+	}
+
+	concat, err := strconv.Atoi(strconv.Itoa(current) + strconv.Itoa(next))
+	lib.CheckError(err)
+
+	return concat <= target && checkNum2(target, concat, nums, i + 1)
 }
 

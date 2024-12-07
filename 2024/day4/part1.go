@@ -1,4 +1,4 @@
-package main
+package day4
 
 import (
 	"strings"
@@ -6,14 +6,10 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part1() {
-	ql := lib.NewQuickLogger(4, 1)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(4).Strings()
-	lib.CheckError(err)
-
+func Part1(file *lib.InputFile) any {
+	input := file.Strings()
 	linesLen := len(input)
+
 	var result int
 	for i, line := range input {
 		chars := strings.Split(line, "")
@@ -59,7 +55,7 @@ func Part1() {
 		}
 	}
 
-	ql.Solve(result)
+	return result
 }
 
 func checkDirection(lines []string, row, col, rD, cD int) bool {

@@ -1,4 +1,4 @@
-package main
+package day1
 
 import (
 	"strconv"
@@ -7,13 +7,8 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-func Part2() {
-	ql := lib.NewQuickLogger(1, 2)
-	ql.Title()
-
-	input, err := lib.LoadInputFile(1).Strings()
-	lib.CheckError(err)
-
+func Part2(file *lib.InputFile) any {
+	input := file.Strings()
 	length := len(input)
 
 	leftNums := make([]int, 0, length)
@@ -41,5 +36,5 @@ func Part2() {
 		similarity += num * rightCount[num]
 	}
 
-	ql.Solve(similarity)
+	return similarity
 }
