@@ -36,14 +36,12 @@ func Part1(file *lib.InputFile) any {
 				beforeCol := first[1] - dCol
 				if beforeRow >= 0 && beforeRow < height && beforeCol >= 0 && beforeCol < width {
 					antinodes[beforeRow * width + beforeCol] = true
-					grid[beforeRow][beforeCol] = '#'
 				}
 
 				afterRow := second[0] + dRow
 				afterCol := second[1] + dCol
 				if afterRow >= 0 && afterRow < height && afterCol >= 0 && afterCol < width {
 					antinodes[afterRow * width + afterCol] = true
-					grid[afterRow][afterCol] = '#'
 				}
 			}
 		}

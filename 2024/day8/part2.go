@@ -48,7 +48,6 @@ func Part2(file *lib.InputFile) any {
 					}
 
 					antinodes[beforeRow * width + beforeCol] = true
-					grid[beforeRow][beforeCol] = '#'
 				}
 
 
@@ -63,7 +62,6 @@ func Part2(file *lib.InputFile) any {
 					}
 
 					antinodes[afterRow * width + afterCol] = true
-					grid[afterRow][afterCol] = '#'
 				}
 			}
 		}
