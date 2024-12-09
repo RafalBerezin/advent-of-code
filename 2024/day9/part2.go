@@ -1,7 +1,6 @@
 package day9
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
@@ -9,29 +8,20 @@ import (
 
 // Turns out reading the puzzle carefully might save you an hour
 func Part2(file *lib.InputFile) any {
-	input := file.Bytes()
-	input = input[:len(input)-1] // remove new line
+	input := file.Digits()
 
-	fmt.Printf("spreadOut: %v\n", string(input))
-
-	spreadOut := make([][]int, len(input))
-	empty := true
-	for i, char := range input {
-		num := int(char - '0')
-		empty = !empty
-
-		if empty {
-			spreadOut[i] = []int{num, -1}
+	unfoldedMap := make([][]int, len(input))
+	for i, size := range input {
+		if i&1 == 1 {
+			unfoldedMap[i] = []int{size, -1}
 			continue
 		}
 
-		spreadOut[i] = []int{num, i/2}
+		unfoldedMap[i] = []int{size, i/2}
 	}
 
-	fmt.Printf("spreadOut: %v\n", spreadOut)
-
-	for i := len(spreadOut) - 1; i > 0; i-- {
-		current := spreadOut[i]
+	for i := len(unfoldedMap) - 1; i > 0; i-- {
+		current := unfoldedMap[i]
 		cId := current[1]
 		if cId == -1 {
 			continue
@@ -39,7 +29,7 @@ func Part2(file *lib.InputFile) any {
 
 		cSize := current[0]
 		for j := 0; j < i; j++ {
-			slot := spreadOut[j]
+			slot := unfoldedMap[j]
 			sId := slot[1]
 			if sId != -1{
 				continue
@@ -50,15 +40,13 @@ func Part2(file *lib.InputFile) any {
 				continue
 			}
 
-			fmt.Printf("Replacing %d: %v with %d %v\n", j, slot, i, current)
-
 			sizeDiff := sSize - cSize
 			slot[0] = current[0]
 			slot[1] = current[1]
 			current[1] = -1
 
 			if sizeDiff > 0 {
-				spreadOut = slices.Insert(spreadOut, j + 1, []int{sizeDiff, -1})
+				unfoldedMap = slices.Insert(unfoldedMap, j + 1, []int{sizeDiff, -1})
 				i++
 			}
 
@@ -68,7 +56,7 @@ func Part2(file *lib.InputFile) any {
 
 	result := 0
 	totalI := 0
-	for _, current := range spreadOut {
+	for _, current := range unfoldedMap {
 		size := current[0]
 		id := current[1]
 
@@ -82,8 +70,6 @@ func Part2(file *lib.InputFile) any {
 			totalI++
 		}
 	}
-
-	fmt.Printf("spreadOut: %v\n", spreadOut)
 
 	return result
 }

@@ -55,6 +55,22 @@ func (f *InputFile) ByteGrid() [][]byte {
 	return rows
 }
 
+func (f *InputFile) Digits() []int {
+	bytes := f.Bytes()
+
+	lastIndex := len(bytes)-1
+	if bytes[lastIndex] == '\n' {
+		bytes = bytes[:lastIndex]
+	}
+
+	digits := make([]int, len(bytes))
+	for i, byte := range bytes {
+		digits[i] = int(byte - '0')
+	}
+
+	return digits
+}
+
 func (f *InputFile) Strings() []string {
 	file, err := os.Open(f.dir + f.file)
 	CheckError(err)

@@ -1,57 +1,52 @@
 package day9
 
 import (
-	"fmt"
-
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
 func Part1(file *lib.InputFile) any {
-	input := file.Bytes()
-	input = input[:len(input)-1] // remove new line
+	input := file.Digits()
 
-	fmt.Printf("spreadOut: %v\n", string(input))
-
-	var spreadOut []int
-	empty := false
-	for i, char := range input {
-		num := int(char - '0')
-		toAppend := i/2 + '0'
-		if empty {
-			toAppend = -1
-		}
-		empty = !empty
-		for j := 0; j < num; j++  {
-			spreadOut = append(spreadOut, toAppend)
-		}
+	diskSize := 0
+	for _, digit := range input {
+		diskSize += digit
 	}
 
-	fmt.Printf("spreadOut: %v\n", spreadOut)
+	unfoldedMap := make([]int, diskSize)
+	resultI := 0
+	for i, size := range input {
+		id := -1
+		if i&1 == 0 {
+			id = i/2
+		}
+
+		for j := 0; j < size; j++ {
+			unfoldedMap[resultI + j] = id
+		}
+		resultI += size
+	}
 
 	result := 0
-	i := -1
-	j := len(spreadOut)
+	low, high := -1, diskSize
 	for {
-		i++
-		if i >= j {
+		low++
+		if low >= high {
 			break
 		}
 
-		if spreadOut[i] != -1 {
-			result += i * (int(spreadOut[i] - '0'))
+		if unfoldedMap[low] != -1 {
+			result += low * unfoldedMap[low]
 			continue
 		}
 
-		for i < j {
-			j--
-			if spreadOut[j] != -1 {
-				result += i * (int(spreadOut[j] - '0'))
+		for low < high {
+			high--
+			if unfoldedMap[high] != -1 {
+				result += low * unfoldedMap[high]
 				break
 			}
 		}
 	}
-
-	// result := Checksum("")
 
 	return result
 }
