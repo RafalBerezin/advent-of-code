@@ -71,6 +71,16 @@ func (f *InputFile) Digits() []int {
 	return digits
 }
 
+func (f *InputFile) DigitGrid() [][]byte {
+	byteGrid := f.ByteGrid()
+	for i, row := range byteGrid {
+		for j, col := range row {
+			byteGrid[i][j] = col - '0'
+		}
+	}
+	return byteGrid
+}
+
 func (f *InputFile) Strings() []string {
 	file, err := os.Open(f.dir + f.file)
 	CheckError(err)
