@@ -1,16 +1,10 @@
 package day12
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
+	"sort"
 
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
-
-// really messy solution
-// i'm going back to sleep
-// i'll do something better when i wake up
 
 func Part2(file *lib.InputFile) any {
 	grid := file.ByteGrid()
@@ -26,62 +20,62 @@ func Part2(file *lib.InputFile) any {
 				continue
 			}
 
-			p, a :=traverse2(&grid, row, col, height, width, []int{0,0}, &areaMap)
-			result += a*p
+			sides, area := traverseSides(&grid, row, col, height, width, &areaMap)
+			result += sides * area
 		}
 	}
 
 	return result
 }
 
-func traverse2(pGrid *[][]byte, row, col, height, width int, from []int, pAreaMap *[]bool) (int, int) {
+func traverseSides(pGrid *[][]byte, startRow, startCol, height, width int, pAreaMap *[]bool) (int, int) {
 	grid := *pGrid
 	areaMap := *pAreaMap
-	privateAreaMap := make([]bool, height * width)
 
-	currentType := grid[row][col]
-	sidesMap := make([]map[string]bool, 4)
-	for i := range sidesMap {
-		sidesMap[i] = make(map[string]bool)
+	areaType := grid[startRow][startCol]
+	localAreaMap := make([]bool, height * width)
+
+	areaSidesMap := make([][][]int, 4)
+	for i := range areaSidesMap {
+		length := height
+		if i & 1 == 1 {
+			length = width
+		}
+		areaSidesMap[i] = make([][]int, length + 2)
 	}
 
-	var expand func(r, c  int)
-	expand = func(r, c  int) {
-		unifiedAreaPos := r * width + c
-		if privateAreaMap[unifiedAreaPos] {
+	var expand func(row, col  int)
+	expand = func(row, col  int) {
+		unifiedAreaPos := row * width + col
+		if localAreaMap[unifiedAreaPos] {
 			return
 		}
-		privateAreaMap[unifiedAreaPos] = true
+		localAreaMap[unifiedAreaPos] = true
 
 		for i, dir := range dirs {
-			if dir[0] == from[0] && dir[1] == from[1] {
-				continue
-			}
-
-			nextRow := r + dir[0]
-			nextCol := c + dir[1]
-			posStrKey := fmt.Sprintf("%d %d", nextRow, nextCol)
+			nextRow := row + dir[0]
+			nextCol := col + dir[1]
 
 			if nextRow < 0 || nextRow >= height || nextCol < 0 || nextCol >= width {
-				sidesMap[i][posStrKey] = true
+				storeSide(&areaSidesMap, row, col, i)
 				continue
 			}
 
 			nextType := grid[nextRow][nextCol]
-			if nextType != currentType {
-				sidesMap[i][posStrKey] = true
+			if nextType != areaType {
+				storeSide(&areaSidesMap, row, col, i)
 				continue
 			}
 
-			privateAreaMap[unifiedAreaPos] = true
+			localAreaMap[unifiedAreaPos] = true
 			expand(nextRow, nextCol)
 		}
 	}
 
-	expand(row, col)
+	expand(startRow, startCol)
 
 	area := 0
-	for i, plot := range privateAreaMap {
+	for i, plot := range localAreaMap {
 		if plot {
 			areaMap[i] = true
 			area++
@@ -89,54 +83,21 @@ func traverse2(pGrid *[][]byte, row, col, height, width int, from []int, pAreaMa
 	}
 
 	sides := 0
-	for i, dir := range sidesMap {
-		if len(dir) == 0 {
-			continue
-		}
-
-		for {
-			var element string
-			for key := range dir {
-				element = key
-				break
+	for _, dir := range areaSidesMap {
+		for _, edgeGroup := range dir {
+			if len(edgeGroup) == 0 {
+				continue
 			}
-			if element == "" {
-				break
-			}
-			delete(dir, element)
 
-			parts := strings.Split(element, " ")
-			row, err := strconv.Atoi(parts[0])
-			lib.CheckError(err)
-			col, err := strconv.Atoi(parts[1])
-			lib.CheckError(err)
+			sort.Ints(edgeGroup)
 
-			sides++
-
-			vertical := i & 1 == 1
-			pRow, pCol := row, col
-
-			for {
-				pRow, pCol = newPos(pRow, pCol, true, vertical)
-				pKey := fmt.Sprintf("%d %d", pRow, pCol)
-
-				if _, found := dir[pKey]; found {
-					delete(dir, pKey)
-				} else {
-					break
+			edge := -10 // the lowest number that should appear is -1
+			for i := 0; i < len(edgeGroup); i++ {
+				nextEdge := edgeGroup[i]
+				if edge + 1 != nextEdge {
+					sides++
 				}
-			}
-
-			nRow, nCol := row, col
-			for {
-				nRow, nCol = newPos(nRow, nCol, false, vertical)
-				nKey := fmt.Sprintf("%d %d", nRow, nCol)
-
-				if _, found := dir[nKey]; found {
-					delete(dir, nKey)
-				} else {
-					break
-				}
+				edge = nextEdge
 			}
 		}
 	}
@@ -144,15 +105,16 @@ func traverse2(pGrid *[][]byte, row, col, height, width int, from []int, pAreaMa
 	return sides, area
 }
 
-func newPos(row, col int, previous, vertical bool) (int, int) {
-	d := 1
-	if previous {
-		d = -1
+func storeSide(pSidesMap *[][][]int, row, col, dirI int) {
+	sidesMap := *pSidesMap
+
+	verticalEdge := dirI & 1 == 1
+	edgeGroup := row
+	edgePlace := col
+	if verticalEdge {
+		edgeGroup = col
+		edgePlace = row
 	}
 
-	if vertical {
-		return row + d, col
-	}
-
-	return row, col + d
+	sidesMap[dirI][edgeGroup] = append(sidesMap[dirI][edgeGroup], edgePlace)
 }

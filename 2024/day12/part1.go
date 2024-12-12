@@ -18,8 +18,8 @@ func Part1(file *lib.InputFile) any {
 				continue
 			}
 
-			p, a :=traverse(&grid, row, col, height, width, []int{0,0}, &areaMap)
-			result += a*p
+			perimeter, area := traversePerimeter(&grid, row, col, height, width, &areaMap)
+			result += perimeter * area
 		}
 	}
 
@@ -27,29 +27,25 @@ func Part1(file *lib.InputFile) any {
 }
 
 var dirs = [][]int{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}
-func traverse(pGrid *[][]byte, row, col, height, width int, from []int, pAreaMap *[]bool) (int, int) {
+func traversePerimeter(pGrid *[][]byte, startRow, startCol, height, width int, pAreaMap *[]bool) (int, int) {
 	grid := *pGrid
 	areaMap := *pAreaMap
 	privateAreaMap := make([]bool, height * width)
 
-	currentType := grid[row][col]
+	currentType := grid[startRow][startCol]
 	perimeter := 0
 
-	var expand func(r, c  int)
-	expand = func(r, c  int) {
-		unifiedAreaPos := r * width + c
+	var expand func(row, col  int)
+	expand = func(row, col  int) {
+		unifiedAreaPos := row * width + col
 		if privateAreaMap[unifiedAreaPos] {
 			return
 		}
 		privateAreaMap[unifiedAreaPos] = true
 
 		for _, dir := range dirs {
-			if dir[0] == from[0] && dir[1] == from[1] {
-				continue
-			}
-
-			nextRow := r + dir[0]
-			nextCol := c + dir[1]
+			nextRow := row + dir[0]
+			nextCol := col + dir[1]
 
 			if nextRow < 0 || nextRow >= height || nextCol < 0 || nextCol >= width {
 				perimeter++
@@ -67,7 +63,7 @@ func traverse(pGrid *[][]byte, row, col, height, width int, from []int, pAreaMap
 		}
 	}
 
-	expand(row, col)
+	expand(startRow, startCol)
 
 	area := 0
 	for i, plot := range privateAreaMap {
