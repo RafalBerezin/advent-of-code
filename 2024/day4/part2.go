@@ -1,91 +1,38 @@
 package day4
 
 import (
-	"strings"
-
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
 func Part2(file *lib.InputFile) any {
-	input := file.Strings()
-	linesLen := len(input)
+	grid := file.ByteGrid()
 
-	var result int
-	for i, line := range input {
-		chars := strings.Split(line, "")
-		charsLen := len(chars)
+	height := len(grid)
+	width := len(grid[0])
 
-		for j, ch := range chars {
-			if ch != "M" {
+	result := 0
+	for row := 1; row < height - 1; row++ {
+		for col := 1; col < width - 1; col++ {
+			if grid[row][col] != 'A' {
 				continue
 			}
 
-			// forward
-			if j + 2 < charsLen && i + 2 < linesLen {
-				// right
-				if checkMAS(input, i, j, false, true) {
-					result++
-				}
-				// down
-				if checkMAS(input, i, j, true, true) {
-					result++
-				}
+			chars := make([]byte, 4)
+			for i, dir :=  range lib.Dirs4Diagonal {
+				chars[i] = grid[row + dir[0]][col + dir[1]]
 			}
-			// backwards
-			if j >= 2 && i >= 2 {
-				// left
-				if checkMAS(input, i, j, false, false) {
-					result++
-				}
-				// up
-				if checkMAS(input, i, j, true, false) {
-					result++
-				}
+
+			for i := range chars {
+				if chars[i] == 'M' &&
+					chars[(i+1)&3] == 'M' &&
+					chars[(i+2)&3] == 'S' &&
+					chars[(i+3)&3] == 'S' {
+						result++
+						break
+					}
 			}
 		}
 	}
 
 	return result
-}
-
-func checkMAS(lines []string, row, col int, vertical, forward bool) bool {
-	fD := -1
-	if forward {
-		fD = 1
-	}
-	fD2 := fD * 2
-
-	vD := 2 * fD
-
-	// middle A
-	if charAt2(lines, row + fD, col + fD) != 'A' {
-		return false
-	}
-
-	// other M
-	if vertical {
-		if charAt2(lines, row, col + vD) != 'M' {
-			return false
-		}
-	} else {
-		if charAt2(lines, row + vD, col) != 'M' {
-			return false
-		}
-	}
-
-	// diagonal S
-	if charAt2(lines, row + fD*2, col + fD2) != 'S' {
-		return false
-	}
-
-	// other S
-	if vertical {
-		return charAt2(lines, row + fD2, col) == 'S'
-	} else {
-		return charAt2(lines, row, col + fD2) == 'S'
-	}
-}
-
-func charAt2(lines []string, row, col int) byte {
-	return []byte(lines[row])[col]
 }

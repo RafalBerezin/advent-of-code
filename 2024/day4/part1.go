@@ -1,69 +1,37 @@
 package day4
 
 import (
-	"strings"
-
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
 func Part1(file *lib.InputFile) any {
-	input := file.Strings()
-	linesLen := len(input)
+	grid := file.ByteGrid()
 
-	var result int
-	for i, line := range input {
-		chars := strings.Split(line, "")
-		charsLen := len(chars)
+	height := len(grid)
+	width := len(grid[0])
 
-		for j, ch := range chars {
-			if ch != "X" {
+	result := 0
+	for row, rowData := range grid {
+		for col, char := range rowData {
+			if char != 'X' {
 				continue
 			}
 
-			// right
-			if j + 3 < charsLen && checkDirection(input, i, j, 0, 1) {
-				result++
-			}
-			// down
-			if i + 3 < linesLen && checkDirection(input, i, j, 1, 0) {
-				result++
-			}
-			// right down
-			if j + 3 < charsLen && i + 3 < linesLen && checkDirection(input, i, j, 1, 1) {
-				result++
-			}
-			// right up
-			if j + 3 < charsLen && i >= 3 && checkDirection(input, i, j, -1, 1) {
-				result++
-			}
-			// left
-			if j >= 3 && checkDirection(input, i, j, 0, -1) {
-				result++
-			}
-			// up
-			if i >= 3 && checkDirection(input, i, j, -1, 0) {
-				result++
-			}
-			// left up
-			if j >= 3 && i >= 3 && checkDirection(input, i, j, -1, -1) {
-				result++
-			}
-			// left down
-			if j >= 3 && i + 3 < linesLen && checkDirection(input, i, j, 1, -1) {
-				result++
+			for _, dir :=  range lib.Dirs8 {
+				mRow, mCol := row + dir[0], col + dir[1]
+				aRow, aCol := row + dir[0] * 2, col + dir[1] * 2
+				sRow, sCol := row + dir[0] * 3, col + dir[1] * 3
+
+				if !lib.InBounds2D(sRow, sCol, height, width) {
+					continue
+				}
+
+				if grid[mRow][mCol] == 'M' && grid[aRow][aCol] == 'A' && grid[sRow][sCol] == 'S' {
+					result++
+				}
 			}
 		}
 	}
 
 	return result
-}
-
-func checkDirection(lines []string, row, col, rD, cD int) bool {
-	return charAt(lines, row + rD, col + cD) == 'M' &&
-		charAt(lines, row + rD*2, col + cD*2) == 'A' &&
-		charAt(lines, row + rD*3, col + cD*3) == 'S'
-}
-
-func charAt(lines []string, row, col int) byte {
-	return []byte(lines[row])[col]
 }
