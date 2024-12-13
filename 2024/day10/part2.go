@@ -28,8 +28,7 @@ func calculateTrailRating(pGrid *[][]byte, row, col, height, width int) int {
 
 	var next func(current byte, y, x int)
 	next = func(current byte, y, x int) {
-		// dirs in part1.go line 25
-		for _, dir := range dirs {
+		for _, dir := range lib.Dirs4 {
 			newY := y + dir[0]
 			newX := x + dir[1]
 

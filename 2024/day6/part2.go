@@ -49,7 +49,7 @@ func checkLoop(grid [][]byte, row, col, height, width int, start []int) bool {
 	}
 
 	dirI := 0
-	dir := dirs[dirI]
+	dir := lib.Dirs4[dirI]
 	guard := start
 
 	gridCopy[row][col] = '#'
@@ -75,7 +75,7 @@ func checkLoop(grid [][]byte, row, col, height, width int, start []int) bool {
 		hitObstacle := gridCopy[nextPos[0]][nextPos[1]] == '#'
 		if hitObstacle {
 			dirI = (dirI + 1) % 4
-			dir = dirs[dirI]
+			dir = lib.Dirs4[dirI]
 			continue
 		}
 

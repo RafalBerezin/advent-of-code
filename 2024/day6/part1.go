@@ -4,8 +4,6 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/lib"
 )
 
-// see shared.go for dirs and findGuard
-
 func Part1(file *lib.InputFile) any {
 	inputGrid := file.ByteGrid()
 

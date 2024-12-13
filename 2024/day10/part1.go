@@ -22,14 +22,13 @@ func Part1(file *lib.InputFile) any {
 	return result
 }
 
-var dirs = [][]int{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}
 func calculateTrailScore(pGrid *[][]byte, row, col, height, width int) int {
 	grid := *pGrid
 	trailTails := make([]bool, height * width)
 
 	var next func(current byte, y, x int)
 	next = func(current byte, y, x int) {
-		for _, dir := range dirs {
+		for _, dir := range lib.Dirs4 {
 			newY := y + dir[0]
 			newX := x + dir[1]
 

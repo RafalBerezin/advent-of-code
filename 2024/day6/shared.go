@@ -1,11 +1,6 @@
 package day6
 
-var dirs = [][]int {
-	{-1,0}, // up
-	{0,1}, // right
-	{1,0}, // down
-	{0,-1}, // left
-}
+import "github.com/RafalBerezin/advent-of-code/2024/lib"
 
 func findGuard(grid [][]byte) []int {
 	for i, row := range grid {
@@ -21,7 +16,7 @@ func findGuard(grid [][]byte) []int {
 
 func findVisitedCells(grid [][]byte, height, width int, guard []int) []bool {
 	dirI := 0 // up
-	dir := dirs[dirI]
+	dir := lib.Dirs4[dirI]
 	visited := make([]bool, height * width)
 
 	for {
@@ -35,7 +30,7 @@ func findVisitedCells(grid [][]byte, height, width int, guard []int) []bool {
 		nextChar := grid[nextPos[0]][nextPos[1]]
 		if nextChar == '#' {
 			dirI = (dirI + 1) % 4
-			dir = dirs[dirI]
+			dir = lib.Dirs4[dirI]
 			continue
 		}
 
