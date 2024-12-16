@@ -15,6 +15,7 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/day13"
 	"github.com/RafalBerezin/advent-of-code/2024/day14"
 	"github.com/RafalBerezin/advent-of-code/2024/day15"
+	"github.com/RafalBerezin/advent-of-code/2024/day16"
 	"github.com/RafalBerezin/advent-of-code/2024/day2"
 	"github.com/RafalBerezin/advent-of-code/2024/day3"
 	"github.com/RafalBerezin/advent-of-code/2024/day4"
@@ -47,6 +48,7 @@ var days = map[string]*day {
 	"13": {day13.Part1, day13.Part2},
 	"14": {day14.Part1, day14.Part2},
 	"15": {day15.Part1, day15.Part2},
+	"16": {day16.Part1, day16.Part2},
 }
 
 var usageInfo = "Usage: go run main.go <day> [<part>] [-e]\nUse '-e' flag to use the example input\n\nExample: 'go run main.go 3 2 -e'\n - runs day 3 part 2 with example input"
