@@ -17,11 +17,6 @@ func Part2(file *lib.InputFile) any {
 		// return "Example grid doesn't have an answer to part 2"
 	}
 
-	grid := make([][]int, height)
-	for row := range grid {
-		grid[row] = make([]int, width)
-	}
-
 	// 1:
 	// it turns out when the tree is displayed
 	// all the robots are on their own space

@@ -41,7 +41,7 @@ func Part2(file *lib.InputFile) any {
 	return result
 }
 
-func checkLoop(grid [][]byte, row, col, height, width int, start []int) bool {
+func checkLoop(grid [][]byte, row, col, height, width int, start lib.Point) bool {
 	gridCopy := make([][]byte, height)
 	for i, row := range grid {
 		gridCopy[i] = make([]byte, width)
@@ -56,25 +56,21 @@ func checkLoop(grid [][]byte, row, col, height, width int, start []int) bool {
 	visited := make([]bool, height * width * 4)
 
 	for {
-		unifiedPos := (guard[0] * width + guard[1]) * 4 + dirI
+		unifiedPos := (guard.Y * width + guard.X) * 4 + dirI
 		if visited[unifiedPos] {
 			grid[row][col] = '.'
 			return true
 		}
 		visited[unifiedPos] = true
 
-		nextPos := []int{
-			guard[0] + dir[0],
-			guard[1] + dir[1],
-		}
-
-		if nextPos[0] < 0 || nextPos[0] >= height || nextPos[1] < 0 || nextPos[1] >= width {
+		nextPos := guard.Add(&dir)
+		if !lib.InBounds2D(nextPos.Y, nextPos.X, height, width) {
 			return false
 		}
 
-		hitObstacle := gridCopy[nextPos[0]][nextPos[1]] == '#'
+		hitObstacle := gridCopy[nextPos.Y][nextPos.X] == '#'
 		if hitObstacle {
-			dirI = (dirI + 1) % 4
+			dirI = (dirI + 1) & 3
 			dir = lib.Dirs4[dirI]
 			continue
 		}

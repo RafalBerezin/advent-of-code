@@ -99,7 +99,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Part should be either '1' or '2' (or don't specify to run both)\n\n" + usageInfo)
+	fmt.Println("Part should be either '1' or '2' (or don't specify to run both)\n\n" + usageInfo)
 }
 
 func runPart(day *day, part rune, input *lib.InputFile) {

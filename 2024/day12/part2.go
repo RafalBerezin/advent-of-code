@@ -18,63 +18,61 @@ func Part2(file *lib.InputFile) any {
 				continue
 			}
 
-			result += traverseSides(&grid, row, col, height, width, &visited)
+			result += traverseSides(&grid, lib.Point{Y: row, X: col}, height, width, &visited)
 		}
 	}
 
 	return result
 }
 
-func traverseSides(pGrid *[][]byte, startRow, startCol, height, width int, pVisited *[]bool) int {
+func traverseSides(pGrid *[][]byte, start lib.Point, height, width int, pVisited *[]bool) int {
 	grid := *pGrid
 	visited := *pVisited
 
-	areaType := grid[startRow][startCol]
+	areaType := grid[start.Y][start.X]
 	area, sides := 0, 0
 
-	var expand func(row, col  int)
-	expand = func(row, col  int) {
-		pos := row * width + col
-		if visited[pos] {
+	var expand func(pos lib.Point)
+	expand = func(pos lib.Point) {
+		id := pos.Y * width + pos.X
+		if visited[id] {
 			return
 		}
-		visited[pos] = true
+		visited[id] = true
 		area++
 
 		for i, dir := range lib.Dirs4 {
-			nextRow := row + dir[0]
-			nextCol := col + dir[1]
+			nextPos := pos.Add(&dir)
 
-			dir2 := lib.Dirs4[(i + 1) % 4]
-			nextRowRotated := row + dir2[0]
-			nextColRotated := col + dir2[1]
+			dirRotated := lib.Dirs4[(i + 1) & 3]
+			nextPosRotated := pos.Add(&dirRotated)
 
 			nextSameType :=
-				lib.InBounds2D(nextRow, nextCol, height, width) &&
-				grid[nextRow][nextCol] == areaType
+				lib.InBounds2D(nextPos.Y, nextPos.X, height, width) &&
+				grid[nextPos.Y][nextPos.X] == areaType
 			nextRotatedSameType :=
-				lib.InBounds2D(nextRowRotated, nextColRotated, height, width) &&
-				grid[nextRowRotated][nextColRotated] == areaType
+				lib.InBounds2D(nextPosRotated.Y, nextPosRotated.X, height, width) &&
+				grid[nextPosRotated.Y][nextPosRotated.X] == areaType
 
 			if !nextSameType && !nextRotatedSameType {
 				sides++
 			}
-			if nextSameType && nextRotatedSameType && grid[nextRow + dir2[0]][nextCol + dir2[1]] != areaType {
+			nextPosDiagonal := nextPos.Add(&dirRotated)
+			if nextSameType && nextRotatedSameType && grid[nextPosDiagonal.Y][nextPosDiagonal.X] != areaType {
 				sides++
 			}
 		}
 
 		for _, dir := range lib.Dirs4 {
-			nextRow := row + dir[0]
-			nextCol := col + dir[1]
+			nextPos := pos.Add(&dir)
 
-			if lib.InBounds2D(nextRow, nextCol, height, width) && grid[nextRow][nextCol] == areaType {
-				expand(nextRow, nextCol)
+			if lib.InBounds2D(nextPos.Y, nextPos.X, height, width) && grid[nextPos.Y][nextPos.X] == areaType {
+				expand(nextPos)
 			}
 		}
 	}
 
-	expand(startRow, startCol)
+	expand(start)
 
 	return sides * area
 }

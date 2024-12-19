@@ -18,43 +18,42 @@ func Part1(file *lib.InputFile) any {
 				continue
 			}
 
-			result += traversePerimeter(&grid, row, col, height, width, &visited)
+			result += traversePerimeter(&grid, lib.Point{Y: row, X: col}, height, width, &visited)
 		}
 	}
 
 	return result
 }
 
-func traversePerimeter(pGrid *[][]byte, startRow, startCol, height, width int, pVisited *[]bool) int {
+func traversePerimeter(pGrid *[][]byte, start lib.Point, height, width int, pVisited *[]bool) int {
 	grid := *pGrid
 	visited := *pVisited
 
-	areaType := grid[startRow][startCol]
+	areaType := grid[start.Y][start.X]
 	area, perimeter := 0, 0
 
-	var expand func(row, col  int)
-	expand = func(row, col  int) {
-		pos := row * width + col
-		if visited[pos] {
+	var expand func(pos lib.Point)
+	expand = func(pos lib.Point) {
+		id := pos.Y * width + pos.X
+		if visited[id] {
 			return
 		}
-		visited[pos] = true
+		visited[id] = true
 		area++
 
 		for _, dir := range lib.Dirs4 {
-			nextRow := row + dir[0]
-			nextCol := col + dir[1]
+			nextPos := pos.Add(&dir)
 
-			if !lib.InBounds2D(nextRow, nextCol, height, width) || grid[nextRow][nextCol] != areaType {
+			if !lib.InBounds2D(nextPos.Y, nextPos.X, height, width) || grid[nextPos.Y][nextPos.X] != areaType {
 				perimeter++
 				continue
 			}
 
-			expand(nextRow, nextCol)
+			expand(nextPos)
 		}
 	}
 
-	expand(startRow, startCol)
+	expand(start)
 
 	return area * perimeter
 }

@@ -13,34 +13,32 @@ func Part1(file *lib.InputFile) any {
 	height := slices.Index(input, "")
 	warehouseGrid := make([][]byte, height)
 
-	robotRow := -1
-	robotCol := -1
+	robot := lib.Point{Y: -1, X: -1}
 	for row, rowData := range input[:height] {
 		warehouseGrid[row] = []byte(rowData)
 		for col, colData := range warehouseGrid[row] {
 			if colData == '@' {
-				robotRow = row
-				robotCol = col
+				robot.Y = row
+				robot.X = col
 			}
 		}
 	}
 
-	if robotCol == -1 || robotRow == -1 {
+	if robot.Y == -1 || robot.X == -1 {
 		return "Could not find the robot (@)"
 	}
-	warehouseGrid[robotRow][robotCol] = '.'
+	warehouseGrid[robot.Y][robot.X] = '.'
 
 	movements := []byte(strings.Join(input[height+1:], ""))
 
 	for _, move := range movements {
 		dir := lib.ByteDir(move)
 
-		currentRow, currentCol := robotRow, robotCol
+		pos := lib.Point{X: robot.X, Y: robot.Y}
 		boxes := 0
 		for {
-			nextRow := currentRow + dir[0]
-			nextCol := currentCol + dir[1]
-			nextSpace := warehouseGrid[nextRow][nextCol]
+			nextPos := pos.Add(&dir)
+			nextSpace := warehouseGrid[nextPos.Y][nextPos.X]
 
 			if nextSpace == '#' {
 				break
@@ -48,26 +46,22 @@ func Part1(file *lib.InputFile) any {
 
 			if nextSpace == 'O' {
 				boxes++
-				currentRow = nextRow
-				currentCol = nextCol
+				pos = nextPos
 				continue
 			}
 
 			if nextSpace == '.' {
-				robotRow += dir[0]
-				robotCol += dir[1]
+				robot = robot.Add(&dir)
 
 				if boxes > 0 {
-					warehouseGrid[robotRow][robotCol] = '.'
-					warehouseGrid[nextRow][nextCol] = 'O'
+					warehouseGrid[robot.Y][robot.X] = '.'
+					warehouseGrid[nextPos.Y][nextPos.X] = 'O'
 				}
 
 				break
 			}
 		}
 	}
-
-	warehouseGrid[robotRow][robotCol] = '@'
 
 	result := 0
 	for row, rowData := range warehouseGrid {

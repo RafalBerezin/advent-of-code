@@ -1,17 +1,19 @@
 package lib
 
-import "slices"
+import (
+	"slices"
+)
 
-var Dirs4 = [][]int{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}
-var Dirs4Diagonal = [][]int{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}}
-var Dirs8 = [][]int{{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}}
+var Dirs4 = []Point{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
+var Dirs4Diagonal = []Point{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}
+var Dirs8 = []Point{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}}
 
 var byteDirs = []byte{'^', '>', 'v', '<'}
 
-func ByteDir(character byte) []int {
+func ByteDir(character byte) Point {
 	i := slices.Index(byteDirs, character)
 	if i == -1 {
-		return []int{}
+		return Point{0, 0}
 	}
 	return Dirs4[i]
 }

@@ -48,7 +48,7 @@ func Part2(file *lib.InputFile) any {
 
 	for _, move := range movements {
 		dir := lib.ByteDir(move)
-		vertical := dir[0] != 0
+		vertical := dir.Y != 0
 
 		currentRow := robotRow
 		boxes := 0
@@ -57,7 +57,7 @@ func Part2(file *lib.InputFile) any {
 			currentCols := [][]int{{robotCol}}
 			i := 0
 			outer: for {
-				nextRow := currentRow + dir[0]
+				nextRow := currentRow + dir.Y
 				nextCols := make([]int, 0)
 
 				for _, currentCol := range currentCols[len(currentCols)-1] {
@@ -81,14 +81,14 @@ func Part2(file *lib.InputFile) any {
 
 				if len(nextCols) == 0 {
 					for i := len(currentCols) - 1; i >= 0; i-- {
-						nextDI := (i+1) * dir[0]
-						DI := i * dir[0]
+						nextDI := (i+1) * dir.Y
+						DI := i * dir.Y
 						for _, col := range currentCols[i] {
 							warehouseGrid[robotRow+nextDI][col] = warehouseGrid[robotRow+DI][col]
 							warehouseGrid[robotRow+DI][col] = '.'
 						}
 					}
-					robotRow += dir[0]
+					robotRow += dir.Y
 					break
 				}
 
@@ -99,7 +99,7 @@ func Part2(file *lib.InputFile) any {
 		} else {
 			currentCol := robotCol
 			for {
-				nextCol := currentCol + dir[1]
+				nextCol := currentCol + dir.X
 				nextSpace := warehouseGrid[currentRow][nextCol]
 
 				if nextSpace == '#' {
@@ -108,20 +108,20 @@ func Part2(file *lib.InputFile) any {
 
 				if nextSpace == '[' || nextSpace == ']' {
 					boxes += 2
-					currentCol = nextCol + dir[1]
+					currentCol = nextCol + dir.X
 					continue
 				}
 
 				if nextSpace == '.' {
-					robotCol += dir[1]
+					robotCol += dir.X
 
 					if boxes > 0 {
 						warehouseGrid[robotRow][robotCol] = '.'
-						boxesCol := robotCol + dir[1]
+						boxesCol := robotCol + dir.X
 						boxes--
 
 						from, to := boxesCol, boxesCol + boxes
-						if dir[1] == -1 {
+						if dir.X == -1 {
 							from, to = boxesCol - boxes, boxesCol
 						}
 

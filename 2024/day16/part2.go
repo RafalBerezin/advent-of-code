@@ -50,7 +50,7 @@ func findPathSeats(pGrid *[][]byte, height, width int, start lib.Point) int {
 	var traverse func(pos lib.Point, facing, score int)
 	traverse = func(pos lib.Point, facing, score int) {
 		dir := lib.Dirs4[facing]
-		nextPos := pos.Add(&lib.Point{Y: dir[0], X: dir[1]})
+		nextPos := pos.Add(&dir)
 
 		next := grid[nextPos.Y][nextPos.X]
 		if next == '#' {

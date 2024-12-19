@@ -15,9 +15,7 @@ func Part2(file *lib.InputFile) any {
 
 	result := 0
 	for _, machine:= range machines {
-		if cost := checkMachine2(&machine); cost != -1 {
-			result += cost
-		}
+		result += checkMachine2(&machine)
 	}
 
 	return result
@@ -28,23 +26,23 @@ func checkMachine2(pMachine *machine) int {
 
 	c := machine.ax * machine.by - machine.ay * machine.bx
 	if c == 0 {
-		return -1
+		return 0
 	}
 
 	d := machine.prizeY * machine.ax - machine.prizeX * machine.ay
 	if d % c != 0 {
-		return -1
+		return 0
 	}
 
 	bPresses := d / c
 	if (machine.prizeX - (bPresses * machine.bx)) % machine.ax != 0 {
-		return -1
+		return 0
 	}
 
 	aPresses := (machine.prizeX - bPresses * machine.bx) / machine.ax
 	if aPresses * machine.ax + bPresses * machine.bx != machine.prizeX ||
 		aPresses * machine.ay + bPresses  * machine.by != machine.prizeY {
-		return -1
+		return 0
 	}
 
 	return aPresses * ACost + bPresses * BCost

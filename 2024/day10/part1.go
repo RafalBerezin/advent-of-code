@@ -14,7 +14,7 @@ func Part1(file *lib.InputFile) any {
 	for i, row := range grid {
 		for j, col := range row {
 			if col == 0 {
-				result += calculateTrailScore(&grid, i, j, height, width)
+				result += calculateTrailScore(&grid, lib.Point{Y: i, X: j}, height, width)
 			}
 		}
 	}
@@ -22,34 +22,33 @@ func Part1(file *lib.InputFile) any {
 	return result
 }
 
-func calculateTrailScore(pGrid *[][]byte, row, col, height, width int) int {
+func calculateTrailScore(pGrid *[][]byte, start lib.Point, height, width int) int {
 	grid := *pGrid
 	trailTails := make([]bool, height * width)
 
-	var next func(current byte, y, x int)
-	next = func(current byte, y, x int) {
+	var next func(current byte, pos lib.Point)
+	next = func(current byte, pos lib.Point) {
 		for _, dir := range lib.Dirs4 {
-			newY := y + dir[0]
-			newX := x + dir[1]
+			newPos := pos.Add(&dir)
 
-			if newY < 0 || newY >= height || newX < 0 || newX >= width {
+			if !lib.InBounds2D(newPos.Y, newPos.X, height, width) {
 				continue
 			}
 
-			nextCell := grid[newY][newX]
+			nextCell := grid[newPos.Y][newPos.X]
 			if nextCell - current != 1 {
 				continue
 			}
 
 			if nextCell == 9 {
-				trailTails[newY * width + newX] = true
+				trailTails[newPos.Y * width + newPos.X] = true
 			} else {
-				next(nextCell,  newY, newX)
+				next(nextCell, newPos)
 			}
 		}
 	}
 
-	next(0, row, col)
+	next(0, start)
 
 	score := 0
 	for _, check := range trailTails {

@@ -19,7 +19,7 @@ func Part2(file *lib.InputFile) any {
 
 			chars := make([]byte, 4)
 			for i, dir :=  range lib.Dirs4Diagonal {
-				chars[i] = grid[row + dir[0]][col + dir[1]]
+				chars[i] = grid[row + dir.Y][col + dir.X]
 			}
 
 			for i := range chars {

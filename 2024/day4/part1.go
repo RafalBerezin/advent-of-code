@@ -18,9 +18,9 @@ func Part1(file *lib.InputFile) any {
 			}
 
 			for _, dir :=  range lib.Dirs8 {
-				mRow, mCol := row + dir[0], col + dir[1]
-				aRow, aCol := row + dir[0] * 2, col + dir[1] * 2
-				sRow, sCol := row + dir[0] * 3, col + dir[1] * 3
+				mRow, mCol := row + dir.Y, col + dir.X
+				aRow, aCol := row + dir.Y * 2, col + dir.X * 2
+				sRow, sCol := row + dir.Y * 3, col + dir.X * 3
 
 				if !lib.InBounds2D(sRow, sCol, height, width) {
 					continue
