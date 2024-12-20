@@ -20,6 +20,7 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/day18"
 	"github.com/RafalBerezin/advent-of-code/2024/day19"
 	"github.com/RafalBerezin/advent-of-code/2024/day2"
+	"github.com/RafalBerezin/advent-of-code/2024/day20"
 	"github.com/RafalBerezin/advent-of-code/2024/day3"
 	"github.com/RafalBerezin/advent-of-code/2024/day4"
 	"github.com/RafalBerezin/advent-of-code/2024/day5"
@@ -31,30 +32,31 @@ import (
 )
 
 type day struct {
-	Part1 func(* lib.InputFile) any
-	Part2 func(* lib.InputFile) any
+	Part1 func(file *lib.InputFile) any
+	Part2 func(file *lib.InputFile) any
 }
 
-var days = map[string]*day {
-	"1": {day1.Part1, day1.Part2},
-	"2": {day2.Part1, day2.Part2},
-	"3": {day3.Part1, day3.Part2},
-	"4": {day4.Part1, day4.Part2},
-	"5": {day5.Part1, day5.Part2},
-	"6": {day6.Part1, day6.Part2},
-	"7": {day7.Part1, day7.Part2},
-	"8": {day8.Part1, day8.Part2},
-	"9": {day9.Part1, day9.Part2},
-	"10": {day10.Part1, day10.Part2},
-	"11": {day11.Part1, day11.Part2},
-	"12": {day12.Part1, day12.Part2},
-	"13": {day13.Part1, day13.Part2},
-	"14": {day14.Part1, day14.Part2},
-	"15": {day15.Part1, day15.Part2},
-	"16": {day16.Part1, day16.Part2},
-	"17": {day17.Part1, day17.Part2},
-	"18": {day18.Part1, day18.Part2},
-	"19": {day19.Part1, day19.Part2},
+var days = []*day {
+	{day1.Part1, day1.Part2},
+	{day2.Part1, day2.Part2},
+	{day3.Part1, day3.Part2},
+	{day4.Part1, day4.Part2},
+	{day5.Part1, day5.Part2},
+	{day6.Part1, day6.Part2},
+	{day7.Part1, day7.Part2},
+	{day8.Part1, day8.Part2},
+	{day9.Part1, day9.Part2},
+	{day10.Part1, day10.Part2},
+	{day11.Part1, day11.Part2},
+	{day12.Part1, day12.Part2},
+	{day13.Part1, day13.Part2},
+	{day14.Part1, day14.Part2},
+	{day15.Part1, day15.Part2},
+	{day16.Part1, day16.Part2},
+	{day17.Part1, day17.Part2},
+	{day18.Part1, day18.Part2},
+	{day19.Part1, day19.Part2},
+	{day20.Part1, day20.Part2},
 }
 
 var usageInfo = "Usage: go run main.go <day> [<part>] [-e]\nUse '-e' flag to use the example input\n\nExample: 'go run main.go 3 2 -e'\n - runs day 3 part 2 with example input"
@@ -73,12 +75,13 @@ func main() {
 		fmt.Println("Day should be a number between 1 and 25")
 		return
 	}
+	dayNum--
 
-	day := days[dayStr]
-	if day == nil {
+	if dayNum >= len(days) {
 		fmt.Printf("No solution for day: '%v'\n", dayStr)
 		return
 	}
+	day := days[dayNum]
 
 	title := fmt.Sprintf("Running ❄︎ Advent of Code ❄︎ 2024 day %v", dayStr)
 	titleBorder := strings.Repeat("─", len(title))
