@@ -9,4 +9,3 @@ func CheckError(err error) {
 func InBounds2D(row, col, height, width int) bool {
 	return 0 <= row && row < height && 0 <= col && col < width
 }
-
