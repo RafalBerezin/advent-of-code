@@ -24,6 +24,7 @@ import (
 	"github.com/RafalBerezin/advent-of-code/2024/day21"
 	"github.com/RafalBerezin/advent-of-code/2024/day22"
 	"github.com/RafalBerezin/advent-of-code/2024/day23"
+	"github.com/RafalBerezin/advent-of-code/2024/day24"
 	"github.com/RafalBerezin/advent-of-code/2024/day3"
 	"github.com/RafalBerezin/advent-of-code/2024/day4"
 	"github.com/RafalBerezin/advent-of-code/2024/day5"
@@ -63,6 +64,7 @@ var days = []*day {
 	{day21.Part1, day21.Part2},
 	{day22.Part1, day22.Part2},
 	{day23.Part1, day23.Part2},
+	{day24.Part1, day24.Part2},
 }
 
 var usageInfo = "Usage: go run main.go <day> [<part>] [-e]\nUse '-e' flag to use the example input\n\nExample: 'go run main.go 3 2 -e'\n - runs day 3 part 2 with example input"
