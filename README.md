@@ -7,6 +7,6 @@ I'm starting this journey in 2024, but at some point I want to solve puzzles fro
 
 ## What languages have I used?
 
-- 2024: Go
+- [2024](./2024/README.md): **Go** (50⭐)
 
-Instructions on how to run the solution are in the specific year's readme.
+Instructions on how to run the solutions are in the specific year's readme.
